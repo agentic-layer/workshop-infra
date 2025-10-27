@@ -13,9 +13,11 @@ spec:
         kind: HelmRepository
         name: vcluster
         namespace: flux-system
-  values: {}
-  # Add any specific vcluster helm values here
-  # For example:
-  # syncer:
-  #   extraArgs:
-  #   - --tls-san=vcluster.local
+  values:
+    # Enable external access via LoadBalancer
+    service:
+      type: LoadBalancer
+    # Sync ingresses from vcluster to host
+    sync:
+      ingresses:
+        enabled: true
