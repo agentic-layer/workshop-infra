@@ -15,9 +15,8 @@ spec:
         namespace: flux-system
   values:
     # Enable external access via LoadBalancer
-    service:
-      type: LoadBalancer
-    # Sync ingresses from vcluster to host
-    sync:
-      ingresses:
+    controlPlane:
+      service:
         enabled: true
+        spec:
+          type: LoadBalancer
