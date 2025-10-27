@@ -27,10 +27,10 @@ create-cluster:
 
 bootstrap-flux:
 	@flux bootstrap github \
-		--owner=$(GITHUB_USER) \
-  		--repository=k8s-native-iac \
+		--owner=agentic-layer \
+  		--repository=workshop-infra \
   		--branch=main \
-  		--path=./clusters/gke-cluster \
+  		--path=./clusters/host-cluster \
 		--components-extra=image-reflector-controller,image-automation-controller \
 		--read-write-key \
   		--personal
