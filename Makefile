@@ -36,7 +36,7 @@ bootstrap-flux:
   		--personal
 
 generate-vcluster-configs:
-  infrastructure/vcluster/generate-overlays.sh
+	@cd infrastructure/vcluster && ./generate-overlays.sh
 
 delete-cluster:
 	@gcloud container clusters delete host-cluster --region=$(GCP_REGION) --async --quiet
