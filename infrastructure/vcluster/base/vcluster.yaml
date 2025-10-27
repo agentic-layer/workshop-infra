@@ -1,0 +1,21 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: vcluster-template # This name will be replaced by the overlay
+  namespace: default
+spec:
+  interval: 1m
+  chart:
+    spec:
+      chart: vcluster
+      version: "0.27.0" # Make sure to use the correct chart version
+      sourceRef:
+        kind: HelmRepository
+        name: vcluster
+        namespace: flux-system
+  values: {}
+  # Add any specific vcluster helm values here
+  # For example:
+  # syncer:
+  #   extraArgs:
+  #   - --tls-san=vcluster.local
