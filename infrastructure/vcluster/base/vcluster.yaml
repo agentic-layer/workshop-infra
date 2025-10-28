@@ -13,6 +13,7 @@ spec:
         kind: HelmRepository
         name: vcluster
         namespace: flux-system
+  # see https://www.vcluster.com/docs/vcluster/configure/vcluster-yaml/ (this is the vcluster.yaml)
   values:
     # Enable external access via LoadBalancer
     controlPlane:
@@ -20,3 +21,8 @@ spec:
         enabled: true
         spec:
           type: LoadBalancer
+    networking:
+      replicateServices:
+        fromHost:
+          - from: monitoring/lgtm
+            to: monitoring/lgtm
