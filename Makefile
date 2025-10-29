@@ -3,7 +3,6 @@ GCP_PROJECT ?= agentic-layer-workshop
 GCP_REGION ?= europe-north1
 GCP_ZONE ?= europe-north1-b
 
-
 prepare-cluster:
 	@gcloud config set compute/zone europe-west1-b
 	@gcloud config set container/use_client_certificate False
@@ -35,8 +34,17 @@ bootstrap-flux:
 		--read-write-key \
   		--personal
 
+secrets:
+	@kubectl create namespace showcase-news
+	@kubectl create secret generic api-key-secrets \
+		--namespace=showcase-news \
+		--from-literal=OPENAI_API_KEY=$WORKSHOP_OPENAI_API_KEY \
+		--from-literal=GEMINI_API_KEY=$WORKSHOP_GEMINI_API_KEY
+
+
 generate-vcluster-configs:
 	@cd infrastructure/vcluster && ./generate-overlays.sh
 
 delete-cluster:
 	@gcloud container clusters delete host-cluster --region=$(GCP_REGION) --async --quiet
+

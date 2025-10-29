@@ -26,3 +26,10 @@ spec:
         fromHost:
           - from: monitoring/lgtm
             to: monitoring/lgtm
+    sync:
+      fromHost:
+        secrets:
+          enabled: true
+          mappings:
+            byName:
+              "showcase-news/*": "showcase-news/*"
