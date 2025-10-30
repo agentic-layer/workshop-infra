@@ -3,6 +3,8 @@ GCP_PROJECT ?= agentic-layer-workshop
 GCP_REGION ?= europe-north1
 GCP_ZONE ?= europe-north1-b
 
+.PHONY: kubeconfigs
+
 prepare-cluster:
 	@gcloud config set compute/zone europe-west1-b
 	@gcloud config set container/use_client_certificate False
@@ -40,6 +42,11 @@ secrets:
 		--namespace=showcase-news \
 		--from-literal=OPENAI_API_KEY=$WORKSHOP_OPENAI_API_KEY \
 		--from-literal=GEMINI_API_KEY=$WORKSHOP_GEMINI_API_KEY
+
+kubeconfigs:
+	rm -rf kubeconfigs/ && rm -fr kubeconfigs-encrypted/ && \
+	sh generate-kubeconfigs.sh && \
+	sh encrypt-kubeconfigs.sh ${WORKSHOP_PASSWORD}
 
 
 generate-vcluster-configs:

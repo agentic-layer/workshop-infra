@@ -16,25 +16,51 @@ Requires the following tools:
 
 ## Setup
 
-### 1. Create the Host Cluster
+### 1. Create the Host Cluster, setup gitops
 ```bash
 make prepare-cluster
 make create-cluster
 make bootstrap-flux
 ```
 
-### 2. Generate vCluster Configurations
-The number of vClusters can be configured by editing `clustersToCreate` in `generate-overlays.sh`:
+### 2. (Optional) Reconfigure vClusters
 
-```bash
-make generate-vcluster-configs
-git add infrastructure/vcluster/overlays
+Edit the variable `clustersToCreate` in `generate-overlays.sh` to change the number of vClusters, then check in the changes:
 ```
+make generate-vcluster-configs
+git add infrastructure/vcluster/overlays/*
+...
+```
+
+vCluster configuration can be changed later in `infrastructure/vcluster/base/vcluster.yaml`.
+
+Note that changing the configuration might require the vClusters to be recreated, potentially breaking any credentials.
+
+### 3. Setup env vars, secrets, and kubeconfigs 
+
+- Copy `.env.example` to `.env`
+- Configure environment variables based on entries in the [Google Secrets Manager](https://console.cloud.google.com/security/secret-manager?project=agentic-layer-workshop)
+- Create secrets in the cluster
+    ```
+    make secrets
+    ```
+- Create vCluster KUBECONFIGs and encrypt them
+    ```
+    make kubeconfigs
+    ```
+- Copy the encrypted kubeconfigs to github.com/agentic-layer/workshop
+
 
 ---
 
 ## Connect
 
+### From External Clients (Remote Access)
+```
+./decrypt-kubeconfig.sh <path-to-encrypted-kubeconfig> <password> out.yaml
+export KUBECONFIG=out.yaml
+kubectl get nodes
+```
 
 ### From Within the Host Cluster (Internal Access)
 ```bash
@@ -43,13 +69,6 @@ vcluster connect vcluster-1 -n vcluster-1
 # This creates a local kubeconfig entry and switches context
 kubectl get nodes
 ```
-
-### From External Clients (Remote Access)
-(TODO)
-
-### Share Credentials with Workshop Participants
-(TODO)
-
 
 ### Connecting to Specific vClusters
 ```bash
