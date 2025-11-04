@@ -37,11 +37,11 @@ bootstrap-flux:
   		--personal
 
 secrets:
-	@kubectl create namespace showcase-news
+	@kubectl create namespace showcase-news && \
 	@kubectl create secret generic api-key-secrets \
 		--namespace=showcase-news \
-		--from-literal=OPENAI_API_KEY=$WORKSHOP_OPENAI_API_KEY \
-		--from-literal=GEMINI_API_KEY=$WORKSHOP_GEMINI_API_KEY
+		--from-literal=OPENAI_API_KEY=${WORKSHOP_OPENAI_API_KEY} \
+		--from-literal=GEMINI_API_KEY=${WORKSHOP_GEMINI_API_KEY}
 
 kubeconfigs:
 	rm -rf kubeconfigs/ && rm -fr kubeconfigs-encrypted/ && \
