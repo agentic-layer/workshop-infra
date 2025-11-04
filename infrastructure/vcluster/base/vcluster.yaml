@@ -26,6 +26,8 @@ spec:
         fromHost:
           - from: monitoring/lgtm
             to: monitoring/lgtm
+          - from: observability-dashboard/observability-dashboard
+            to: observability-dashboard/observability-dashboard
     sync:
       fromHost:
         secrets:
