@@ -23,9 +23,7 @@ spec:
           type: LoadBalancer
     networking:
       replicateServices:
-        fromHost:
-          - from: observability-dashboard/observability-dashboard
-            to: observability-dashboard/observability-dashboard
+        fromHost: []
     sync:
       fromHost:
         secrets:
