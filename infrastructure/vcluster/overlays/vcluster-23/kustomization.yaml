@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: vcluster-23
+resources:
+  - namespace.yaml
+  - ../../base
+
+patches:
+  - patch: |-
+      - op: replace
+        path: /metadata/name
+        value: vcluster-23
+      - op: replace
+        path: /metadata/namespace
+        value: vcluster-23
+    target:
+      kind: HelmRelease
+      name: vcluster-template

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuration
-clustersToCreate=4
+clustersToCreate=24
 
 # Clean up previous generated files
 rm -rf overlays
