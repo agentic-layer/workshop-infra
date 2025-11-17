@@ -46,7 +46,7 @@ secrets:
 		--from-literal=GEMINI_API_KEY=${WORKSHOP_GEMINI_API_KEY}
 
 kubeconfigs:
-	rm -rf kubeconfigs/ && rm -fr kubeconfigs-encrypted/ && \
+	rm -rf kubeconfigs/ && rm -rf kubeconfigs-encrypted/ && \
 	sh generate-kubeconfigs.sh && \
 	sh encrypt-kubeconfigs.sh ${WORKSHOP_PASSWORD}
 

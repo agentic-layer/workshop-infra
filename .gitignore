@@ -37,7 +37,6 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
-/kubeconfigs/participant-1-kubeconfig.yaml
-/kubeconfigs/participant-2-kubeconfig.yaml
-/kubeconfigs/participant-3-kubeconfig.yaml
-/kubeconfigs/participant-4-kubeconfig.yaml
+
+/kubeconfigs/*.yaml
+/kubeconfigs-encrypted/*.yaml
