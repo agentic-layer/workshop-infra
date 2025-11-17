@@ -40,3 +40,4 @@ terraform.rc
 
 /kubeconfigs/*.yaml
 /kubeconfigs-encrypted/*.yaml
+*-sa-key.json
