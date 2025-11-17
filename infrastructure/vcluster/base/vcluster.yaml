@@ -1,4 +1,4 @@
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: vcluster-template # This name will be replaced by the overlay
@@ -42,3 +42,4 @@ spec:
           mappings:
             byName:
               "showcase-news/*": "showcase-news/*"
+              "default/*": "default/*"
