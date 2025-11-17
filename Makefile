@@ -1,7 +1,8 @@
-GITHUB_USER ?= felixk101
+GITHUB_USER ?= agentic-layer
 GCP_PROJECT ?= agentic-layer-workshop
-GCP_REGION ?= europe-north1
-GCP_ZONE ?= europe-north1-b
+GCP_REGION ?= europe-west1
+GCP_ZONE ?= europe-west1-b
+CLUSTER_NAME ?= host-cluster
 
 .PHONY: kubeconfigs
 
@@ -10,16 +11,18 @@ prepare-cluster:
 	@gcloud config set container/use_client_certificate False
 
 create-cluster:
-	@gcloud container clusters create host-cluster  \
+	@gcloud container clusters create $(CLUSTER_NAME)-$(GCP_REGION)  \
 		--addons HttpLoadBalancing,HorizontalPodAutoscaling,ConfigConnector \
 		--workload-pool=$(GCP_PROJECT).svc.id.goog \
 		--enable-autoscaling \
 		--autoscaling-profile=optimize-utilization \
-		--num-nodes=2 \
-		--min-nodes=2 --max-nodes=5 \
-		--machine-type=e2-standard-2 \
+		--num-nodes=1 \
+		--min-nodes=1 --max-nodes=5 \
+		--machine-type=n1-standard-8 \
+        --accelerator type=nvidia-tesla-t4,count=1 \
+        --local-ssd-count=1 \
 		--logging=SYSTEM \
-    --monitoring=SYSTEM \
+    	--monitoring=SYSTEM \
 		--region=$(GCP_REGION) \
 		--release-channel=stable \
 		--cluster-version=1.33
@@ -28,10 +31,10 @@ create-cluster:
 
 bootstrap-flux:
 	@flux bootstrap github \
-		--owner=agentic-layer \
+		--owner=$(GITHUB_USER) \
   		--repository=workshop-infra \
   		--branch=main \
-  		--path=./clusters/host-cluster \
+  		--path=./clusters/$(CLUSTER_NAME)-$(GCP_REGION) \
 		--components-extra=image-reflector-controller,image-automation-controller \
 		--read-write-key \
   		--personal
@@ -48,10 +51,9 @@ kubeconfigs:
 	sh generate-kubeconfigs.sh && \
 	sh encrypt-kubeconfigs.sh ${WORKSHOP_PASSWORD}
 
-
 generate-vcluster-configs:
 	@cd infrastructure/vcluster && ./generate-overlays.sh
 
 delete-cluster:
-	@gcloud container clusters delete host-cluster --region=$(GCP_REGION) --async --quiet
+	@gcloud container clusters delete $(CLUSTER_NAME) --region=$(GCP_REGION) --async --quiet
 

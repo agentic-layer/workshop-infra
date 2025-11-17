@@ -24,8 +24,17 @@ spec:
     networking:
       replicateServices:
         fromHost: []
+    integrations:
+      metricsServer:
+        enabled: true
+        nodes: true
+        pods: true
     sync:
       fromHost:
+        nodes:
+          enabled: true
+          selector:
+            all: true
         secrets:
           enabled: true
           mappings:
