@@ -2,7 +2,7 @@ GITHUB_USER ?= agentic-layer
 GCP_PROJECT ?= agentic-layer-workshop
 GCP_REGION ?= europe-west1
 GCP_ZONE ?= europe-west1-b
-CLUSTER_NAME ?= host-cluster
+CLUSTER_NAME ?= mother-vcluster
 
 .PHONY: kubeconfigs
 
@@ -35,7 +35,6 @@ bootstrap-flux:
   		--repository=workshop-infra \
   		--branch=main \
   		--path=./clusters/$(CLUSTER_NAME)-$(GCP_REGION) \
-		--components-extra=image-reflector-controller,image-automation-controller \
 		--read-write-key \
   		--personal
 
