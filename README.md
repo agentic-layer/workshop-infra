@@ -50,6 +50,13 @@ Note that changing the configuration might require the vClusters to be recreated
     ```
 - Copy the encrypted kubeconfigs to github.com/agentic-layer/workshop
 
+### 4. Model Serving with Ollama
+
+```bash
+# llama3.1 model deployment via CRD
+kubectl apply -f foundation/*/ollama-model-llama31.yaml
+kollama expose llama3.1 --service-name=ollama-model-llama31-lb --service-type LoadBalancer
+```
 
 ---
 
