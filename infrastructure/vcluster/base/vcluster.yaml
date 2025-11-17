@@ -23,7 +23,9 @@ spec:
           type: LoadBalancer
     networking:
       replicateServices:
-        fromHost: []
+        fromHost:
+          - from: ollama-operator-system/ollama-model-llama31-lb
+            to: default/ollama-model-llama31
     integrations:
       metricsServer:
         enabled: true

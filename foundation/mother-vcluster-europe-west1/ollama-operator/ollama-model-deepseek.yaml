@@ -2,6 +2,7 @@ apiVersion: ollama.ayaka.io/v1
 kind: Model
 metadata:
   name: deepseek-r1
+  namespace: ollama-operator-system
 spec:
   replicas: 1
   image: deepseek-r1

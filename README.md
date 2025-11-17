@@ -54,8 +54,26 @@ Note that changing the configuration might require the vClusters to be recreated
 
 ```bash
 # llama3.1 model deployment via CRD
-kubectl apply -f foundation/*/ollama-model-llama31.yaml
-kollama expose llama3.1 --service-name=ollama-model-llama31-lb --service-type LoadBalancer
+kubectl apply -f foundation/mother-vcluster-europe-west1/ollama-operator/ollama-model-llama31.yaml
+kollama expose llama3.1 --service-name=ollama-model-llama31-lb --service-type LoadBalancer --namespace ollama-operator-system
+
+# to start a chat with ollama
+# exchange localhost with the actual LoadBalancer IP
+OLLAMA_HOST=localhost:11434 ollama run llama3.1
+
+# call the chat API of Ollama or OpenAI
+# curl http://localhost:11434/v1/chat/completions
+curl http://localhost:11434/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "llama3.1",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Say this is a test!"
+      }
+    ]
+  }'
 ```
 
 ---
