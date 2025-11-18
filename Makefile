@@ -60,5 +60,5 @@ generate-vcluster-configs:
 	@cd infrastructure/vcluster && ./generate-overlays.sh
 
 delete-cluster:
-	@gcloud container clusters delete $(CLUSTER_NAME) --region=$(GCP_REGION) --async --quiet
+	@gcloud container clusters delete $(CLUSTER_NAME)-$(GCP_REGION) --region=$(GCP_REGION) --async --quiet
 
