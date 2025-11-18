@@ -24,7 +24,7 @@ spec:
     networking:
       replicateServices:
         fromHost:
-          - from: ollama-operator-system/ollama-model-llama31-lb
+          - from: ollama-operator-system/ollama-model-llama31
             to: default/ollama-model-llama31
     integrations:
       metricsServer:
