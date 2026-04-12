@@ -1,7 +1,0 @@
-kind: Namespace
-apiVersion: v1
-metadata:
-  name: config-connector
-  annotations:
-    # required to configure Config Connector with Google Cloud ProjectID
-    cnrm.cloud.google.com/project-id: agentic-layer-workshop
