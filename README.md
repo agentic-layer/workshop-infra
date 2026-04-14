@@ -40,6 +40,7 @@ Note that changing the configuration might require the vClusters to be recreated
 
 - Copy `.env.example` to `.env`
 - Configure environment variables based on entries in the [Google Secrets Manager](https://console.cloud.google.com/security/secret-manager?project=agentic-layer-workshop)
+- `source .env`
 - Create secrets in the cluster
     ```
     make secrets
