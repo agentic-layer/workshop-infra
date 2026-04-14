@@ -1,14 +1,13 @@
-GITHUB_USER ?= agentic-layer
-GCP_PROJECT ?= agentic-layer-workshop
-GCP_REGION ?= europe-west1
-GCP_ZONE ?= europe-west1-b
+GITHUB_USER = agentic-layer
+GCP_PROJECT = agentic-layer-workshop
+GCP_REGION = europe-west1
+GCP_ZONE = europe-west1-b
 CLUSTER_NAME ?= mother-vcluster
 
-.PHONY: kubeconfigs
+.PHONY: prepare-cluster create-cluster create-gcp-sa bootstrap-flux secrets kubeconfigs generate-vcluster-configs delete-cluster
 
 prepare-cluster:
 	@gcloud config set compute/zone europe-west1-b
-	@gcloud config set container/use_client_certificate False
 
 create-cluster:
 	@gcloud container clusters create $(CLUSTER_NAME)-$(GCP_REGION)  \
@@ -19,10 +18,10 @@ create-cluster:
 		--num-nodes=1 \
 		--min-nodes=1 --max-nodes=5 \
 		--machine-type=n1-standard-8 \
-        --accelerator type=nvidia-tesla-t4,count=1 \
-        --local-ssd-count=1 \
+		--accelerator type=nvidia-tesla-t4,count=1 \
+		--ephemeral-storage-local-ssd count=1 \
 		--logging=SYSTEM \
-    	--monitoring=SYSTEM \
+		--monitoring=SYSTEM \
 		--region=$(GCP_REGION) \
 		--release-channel=stable \
 		--cluster-version=1.33
@@ -40,16 +39,16 @@ bootstrap-flux:
 		--owner=$(GITHUB_USER) \
   		--repository=workshop-infra \
   		--branch=main \
-  		--path=./clusters/$(CLUSTER_NAME)-$(GCP_REGION) \
+  		--path=./clusters/host-cluster \
 		--read-write-key \
   		--personal
 
 secrets:
-	@kubectl create namespace showcase-news && \
 	@kubectl create secret generic api-key-secrets \
 		--namespace=showcase-news \
 		--from-literal=OPENAI_API_KEY=${WORKSHOP_OPENAI_API_KEY} \
-		--from-literal=GEMINI_API_KEY=${WORKSHOP_GEMINI_API_KEY}
+		--from-literal=GEMINI_API_KEY=${WORKSHOP_GEMINI_API_KEY} \
+		--dry-run=client -o yaml | kubectl apply -f -
 
 kubeconfigs:
 	rm -rf kubeconfigs/ && rm -rf kubeconfigs-encrypted/ && \
