@@ -1,0 +1,12 @@
+apiVersion: runtime.agentic-layer.ai/v1alpha1
+kind: AiGateway
+metadata:
+  name: ai-gateway
+  namespace: agent-gateway
+spec:
+  AiGatewayClassName: litellm
+  aiModels:
+    - provider: openai
+      name: gpt-4.5-turbo
+    - provider: gemini
+      name: gemini-2.5-pro
