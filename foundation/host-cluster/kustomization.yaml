@@ -7,5 +7,4 @@ resources:
   - namespace-ai-gateway.yaml
   - aigateway.yaml
   - toolgateway.yaml
-  - ec-schedule-mcp.yaml
 #  - librechat/
