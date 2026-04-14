@@ -2,7 +2,7 @@ apiVersion: runtime.agentic-layer.ai/v1alpha1
 kind: AiGateway
 metadata:
   name: ai-gateway
-  namespace: agent-gateway
+  namespace: agentic-layer
 spec:
   aiGatewayClassName: litellm
   aiModels:
