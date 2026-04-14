@@ -1,0 +1,2 @@
+helm repo add testkube https://kubeshop.github.io/helm-charts
+helm upgrade --install testkube testkube/testkube --namespace testkube --create-namespace --set testkube-operator.enabled=true --skip-crds=false
