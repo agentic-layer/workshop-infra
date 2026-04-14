@@ -4,7 +4,7 @@ metadata:
   name: ai-gateway
   namespace: agent-gateway
 spec:
-  AiGatewayClassName: litellm
+  aiGatewayClassName: litellm
   aiModels:
     - provider: openai
       name: gpt-4.5-turbo
