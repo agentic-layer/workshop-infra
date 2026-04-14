@@ -2,7 +2,7 @@ apiVersion: runtime.agentic-layer.ai/v1alpha1
 kind: AgentGateway
 metadata:
   name: agent-gateway
-  namespace: agentic-layer
+  namespace: agent-gateway
 spec:
   replicas: 1
   timeout: 5m0s
