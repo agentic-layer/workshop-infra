@@ -3,8 +3,8 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - namespace-agent-gateway.yaml
-  - namespace-ai-gateway.yaml
   - agentgateway.yaml
+  - namespace-ai-gateway.yaml
   - aigateway.yaml
-  - librechat/
   - toolgateway.yaml
+#  - librechat/
