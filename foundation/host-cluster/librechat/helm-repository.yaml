@@ -1,0 +1,9 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: librechat
+  namespace: librechat
+spec:
+  interval: 1h0m0s
+  url: oci://ghcr.io/danny-avila/librechat-chart
+  type: oci
