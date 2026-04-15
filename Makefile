@@ -18,8 +18,6 @@ create-cluster:
 		--num-nodes=1 \
 		--min-nodes=1 --max-nodes=5 \
 		--machine-type=n1-standard-8 \
-		--accelerator type=nvidia-tesla-t4,count=1 \
-		--ephemeral-storage-local-ssd count=1 \
 		--logging=SYSTEM \
 		--monitoring=SYSTEM \
 		--region=$(GCP_REGION) \
@@ -45,7 +43,7 @@ bootstrap-flux:
 
 secrets:
 	@kubectl create secret generic api-key-secrets \
-		--namespace=showcase-news \
+		--namespace=ai-gateway \
 		--from-literal=OPENAI_API_KEY=${WORKSHOP_OPENAI_API_KEY} \
 		--from-literal=GEMINI_API_KEY=${WORKSHOP_GEMINI_API_KEY} \
 		--dry-run=client -o yaml | kubectl apply -f -
