@@ -6,6 +6,9 @@ rules:
   - apiGroups: ["*"]
     resources: ["*"]
     verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods/portforward", "pods/exec", "services/proxy"]
+    verbs: ["create"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
