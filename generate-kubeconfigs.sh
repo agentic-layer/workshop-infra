@@ -1,58 +1,61 @@
 #!/bin/bash
 
-# Script to generate kubeconfig files for all vClusters
-# These files can be distributed to workshop participants for external access
+# Script to generate a shared kubeconfig from the workshop-participant ServiceAccount token.
+# Participants can use this kubeconfig with just kubectl — no gcloud or Google account needed.
 
 set -e
 
-# Configuration
-CLUSTERS_COUNT=4
+SA_NAMESPACE="workshop-system"
+SECRET_NAME="workshop-participant-token"
 OUTPUT_DIR="kubeconfigs"
+OUTPUT_FILE="$OUTPUT_DIR/workshop-kubeconfig.yaml"
 
-# Create output directory
 mkdir -p "$OUTPUT_DIR"
 
 echo "================================================"
-echo "Generating kubeconfig files for vClusters"
+echo "Generating workshop participant kubeconfig"
 echo "================================================"
 echo ""
 
-# Generate kubeconfig for each vCluster
-for i in $(seq 1 $CLUSTERS_COUNT); do
-  VCLUSTER_NAME="vcluster-$i"
-  NAMESPACE="vcluster-$i"
-  OUTPUT_FILE="$OUTPUT_DIR/participant-$i-kubeconfig.yaml"
+# Get the current cluster API server
+SERVER=$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}')
+echo "API server: $SERVER"
 
-  echo "Processing $VCLUSTER_NAME..."
+# Read token and CA from the SA secret
+TOKEN=$(kubectl get secret "$SECRET_NAME" -n "$SA_NAMESPACE" -o jsonpath='{.data.token}' | base64 -d)
+CA=$(kubectl get secret "$SECRET_NAME" -n "$SA_NAMESPACE" -o jsonpath='{.data.ca\.crt}')
 
-  # Get the external IP
-  EXTERNAL_IP=$(kubectl get svc $VCLUSTER_NAME -n $NAMESPACE -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+if [ -z "$TOKEN" ]; then
+  echo "ERROR: Token not found in secret $SECRET_NAME. Is the ServiceAccount deployed?"
+  exit 1
+fi
 
-  if [ -z "$EXTERNAL_IP" ]; then
-    echo "  ✗ ERROR: No external IP found for $VCLUSTER_NAME"
-    continue
-  fi
+# Build the kubeconfig
+cat > "$OUTPUT_FILE" <<EOF
+apiVersion: v1
+kind: Config
+clusters:
+  - name: workshop
+    cluster:
+      server: ${SERVER}
+      certificate-authority-data: ${CA}
+contexts:
+  - name: workshop
+    context:
+      cluster: workshop
+      user: workshop-participant
+users:
+  - name: workshop-participant
+    user:
+      token: ${TOKEN}
+current-context: workshop
+EOF
 
-  echo "  External IP: $EXTERNAL_IP"
-  echo "  Generating kubeconfig..."
-
-  # Generate kubeconfig using vcluster CLI
-  vcluster connect $VCLUSTER_NAME -n $NAMESPACE \
-    --server=https://$EXTERNAL_IP \
-    --print > "$OUTPUT_FILE"
-
-  echo "  ✓ Generated: $OUTPUT_FILE"
-  echo ""
-done
-
-echo "================================================"
-echo "Summary"
-echo "================================================"
-echo "Generated kubeconfig files in $OUTPUT_DIR/:"
-ls -lh "$OUTPUT_DIR"/*.yaml
 echo ""
-echo "To test a kubeconfig:"
-echo "  export KUBECONFIG=$OUTPUT_DIR/participant-1-kubeconfig.yaml"
-echo "  kubectl get nodes"
+echo "Generated: $OUTPUT_FILE"
 echo ""
-echo "Distribute these files to workshop participants!"
+echo "To test:"
+echo "  export KUBECONFIG=$OUTPUT_FILE"
+echo "  kubectl get namespaces"
+echo ""
+echo "Distribute this file to all workshop participants."
