@@ -1,0 +1,82 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - helm-repository.yaml
+  - helm-release-otel-operator.yaml
+  - otel-operator-rbac.yaml
+  - helm-release-prometheus-crds.yaml
+  - helm-release-loki.yaml
+  - helm-release-mimir.yaml
+  - helm-release-tempo.yaml
+  - helm-release-grafana.yaml
+  - otel-collector-rbac.yaml
+  - otel-targetallocator-rbac.yaml
+  - otel-collector.yaml
+  - otel-instrumentation.yaml
+  - mimir-ruler-rules.yaml
+configMapGenerator:
+  - name: grafana-dashboard-pvc
+    namespace: monitoring
+    files:
+      - grafana-dashboard-pvc.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      disableNameSuffixHash: true
+  - name: grafana-dashboard-otel-collector
+    namespace: monitoring
+    files:
+      - grafana-dashboard-otel-collector.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      disableNameSuffixHash: true
+  - name: grafana-dashboard-kubeletstats
+    namespace: monitoring
+    files:
+      - grafana-dashboard-kubeletstats.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      disableNameSuffixHash: true
+  - name: grafana-dashboard-jvm
+    namespace: monitoring
+    files:
+      - grafana-dashboard-jvm.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      disableNameSuffixHash: true
+  - name: grafana-dashboard-http
+    namespace: monitoring
+    files:
+      - grafana-dashboard-http.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      disableNameSuffixHash: true
+  - name: grafana-dashboard-litellm
+    namespace: monitoring
+    files:
+      - grafana-dashboard-litellm.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      disableNameSuffixHash: true
+  - name: grafana-dashboard-http-services
+    namespace: monitoring
+    files:
+      - grafana-dashboard-http-services.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      disableNameSuffixHash: true
+  - name: grafana-dashboard-agents
+    namespace: monitoring
+    files:
+      - grafana-dashboard-agents.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      disableNameSuffixHash: true

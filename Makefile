@@ -16,7 +16,7 @@ create-cluster:
 		--enable-autoscaling \
 		--autoscaling-profile=optimize-utilization \
 		--num-nodes=1 \
-		--min-nodes=1 --max-nodes=5 \
+		--min-nodes=1 --max-nodes=6 \
 		--machine-type=n1-standard-8 \
 		--logging=SYSTEM \
 		--monitoring=SYSTEM \

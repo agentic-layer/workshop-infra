@@ -1,0 +1,96 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: tempo
+  namespace: monitoring
+spec:
+  chart:
+    spec:
+      chart: tempo
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: monitoring
+      version: "1.24.4"
+  interval: 1h0m0s
+  releaseName: tempo
+  values:
+    config: |
+      memberlist:
+        cluster_label: "{{ .Release.Name }}.{{ .Release.Namespace }}"
+      multitenancy_enabled: {{ .Values.tempo.multitenancyEnabled }}
+      usage_report:
+        reporting_enabled: {{ .Values.tempo.reportingEnabled }}
+      compactor:
+        compaction:
+          block_retention: {{ .Values.tempo.retention }}
+      distributor:
+        max_attribute_bytes: 1000000
+        receivers:
+          {{- toYaml .Values.tempo.receivers | nindent 8 }}
+      ingester:
+        {{- toYaml .Values.tempo.ingester | nindent 6 }}
+      server:
+        {{- toYaml .Values.tempo.server | nindent 6 }}
+      storage:
+        {{- toYaml .Values.tempo.storage | nindent 6 }}
+      querier:
+        {{- toYaml .Values.tempo.querier | nindent 6 }}
+      query_frontend:
+        {{- toYaml .Values.tempo.queryFrontend | nindent 6 }}
+      overrides:
+        {{- toYaml .Values.tempo.overrides | nindent 6 }}
+      {{- if .Values.tempo.metricsGenerator.enabled }}
+      metrics_generator:
+        {{- if .Values.tempo.metricsGenerator.processor }}
+        processor:
+          {{- toYaml .Values.tempo.metricsGenerator.processor | nindent 8 }}
+        {{- end }}
+        {{- if .Values.tempo.metricsGenerator.registry }}
+        registry:
+          {{- toYaml .Values.tempo.metricsGenerator.registry | nindent 8 }}
+        {{- end }}
+        storage:
+          path: {{ .Values.tempo.metricsGenerator.storage.path | quote }}
+          {{- if .Values.tempo.metricsGenerator.storage.remote_write }}
+          remote_write:
+            {{- toYaml .Values.tempo.metricsGenerator.storage.remote_write | nindent 10 }}
+          {{- else }}
+          remote_write:
+            - url: {{ .Values.tempo.metricsGenerator.remoteWriteUrl }}
+          {{- end }}
+        traces_storage:
+          path: {{ .Values.tempo.metricsGenerator.traces_storage.path | quote }}
+      {{- end }}
+    persistence:
+      enabled: true
+      size: 10Gi
+    tempo:
+      metricsGenerator:
+        enabled: true
+        remoteWriteUrl: "http://mimir-gateway.monitoring/prometheus/api/v1/write"
+      overrides:
+        defaults:
+          storage:
+            parquet_dedicated_columns:
+              - name: service.name
+                type: string
+                scope: resource
+              - name: service.namespace
+                type: string
+                scope: resource
+              - name: k8s.namespace.name
+                type: string
+                scope: resource
+              - name: k8s.deployment.name
+                type: string
+                scope: resource
+      resources:
+        requests:
+          cpu: 10m
+          memory: 200Mi
+        limits:
+          cpu: 500m
+          memory: 2Gi
+    tempoQuery:
+      enabled: true

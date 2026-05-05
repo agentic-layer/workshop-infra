@@ -1,0 +1,9 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: agentic-layer
+  namespace: observability-dashboard
+spec:
+  interval: 1h0m0s
+  url: oci://ghcr.io/agentic-layer/charts
+  type: oci

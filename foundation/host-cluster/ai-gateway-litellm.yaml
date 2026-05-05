@@ -1,0 +1,26 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: ai-gateway-litellm
+  namespace: flux-system
+spec:
+  interval: 5m
+  url: oci://ghcr.io/agentic-layer/manifests/ai-gateway-litellm
+  ref:
+    tag: "0.9.1"
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ai-gateway-litellm
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: OCIRepository
+    name: ai-gateway-litellm
+  interval: 10m
+  path: ./
+  prune: true
+  wait: true
+  dependsOn:
+    - name: agent-runtime-operator

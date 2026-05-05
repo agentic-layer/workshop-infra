@@ -1,0 +1,38 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: otel-operator
+  namespace: monitoring
+spec:
+  chart:
+    spec:
+      chart: opentelemetry-operator
+      sourceRef:
+        kind: HelmRepository
+        name: opentelemetry
+        namespace: monitoring
+      version: "0.111.0"
+  interval: 1h
+  releaseName: otel-operator
+  values:
+    manager:
+      createRbacPermissions: true
+      collectorImage:
+        repository: otel/opentelemetry-collector-contrib
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          cpu: 200m
+          memory: 128Mi
+    admissionWebhooks:
+      certManager:
+        enabled: true
+      namespaceSelector:
+        matchExpressions:
+          - key: kubernetes.io/metadata.name
+            operator: NotIn
+            values:
+              - kube-system
+              - kube-node-lease

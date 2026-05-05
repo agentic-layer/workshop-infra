@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mimir-ruler-rules
+  namespace: monitoring
+data:
+  testbench-rules.yaml: |
+    groups:
+      - name: testbench.workflow.alerts
+        interval: 30s
+        rules:
+          - record: testbench:workflow_fail_rate:ratio
+            expr: |
+              count by (workflow_name, execution_id, execution_number) (
+                testbench_evaluation_metric{result="fail"}
+              )
+              /
+              count by (workflow_name, execution_id, execution_number) (
+                testbench_evaluation_metric
+              )
+          - alert: TestbenchWorkflowHighFailRate
+            expr: testbench:workflow_fail_rate:ratio > 0.1
+            labels:
+              severity: warning
+            annotations:
+              summary: "Workflow {{ $labels.workflow_name }} has >10% fail rate"
+              description: "Execution #{{ $labels.execution_number }} ({{ $labels.execution_id }}) has a fail rate of {{ $value | humanizePercentage }}."

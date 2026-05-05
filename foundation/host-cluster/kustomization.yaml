@@ -8,3 +8,13 @@ resources:
   - aigateway.yaml
   - toolgateway.yaml
   - librechat/
+  - agent-runtime-operator.yaml
+  - agent-gateway-krakend-operator.yaml
+  - ai-gateway-litellm.yaml
+  - tool-gateway-agentgateway.yaml
+  - testbench-operator.yaml
+  - presidio.yaml
+  - testkube/
+  - testbench/
+  - monitoring/
+  - observability-dashboard/

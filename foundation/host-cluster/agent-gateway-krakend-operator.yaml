@@ -1,0 +1,26 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: agent-gateway-krakend-operator
+  namespace: flux-system
+spec:
+  interval: 5m
+  url: oci://ghcr.io/agentic-layer/manifests/agent-gateway-krakend-operator
+  ref:
+    tag: "0.7.0"
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: agent-gateway-krakend-operator
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: OCIRepository
+    name: agent-gateway-krakend-operator
+  interval: 10m
+  path: ./
+  prune: true
+  wait: true
+  dependsOn:
+    - name: agent-runtime-operator

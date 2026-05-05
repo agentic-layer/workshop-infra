@@ -1,0 +1,28 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: testkube
+  namespace: testkube
+spec:
+  chart:
+    spec:
+      chart: testkube
+      sourceRef:
+        kind: HelmRepository
+        name: testkube
+      version: "2.9.2"
+  interval: 1h0m0s
+  timeout: 10m
+  values:
+    mongodb:
+      updateStrategy:
+        type: Recreate
+      pdb:
+        create: true
+        minAvailable: 0
+    global:
+      testWorkflows:
+        createOfficialTemplates: false
+        createServiceAccountTemplates: false
+    cronJobs:
+      enabled: true

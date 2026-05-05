@@ -1,0 +1,77 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: mimir
+  namespace: monitoring
+spec:
+  timeout: 15m
+  chart:
+    spec:
+      chart: mimir-distributed
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: monitoring
+      version: "6.0.6"
+  interval: 1h0m0s
+  releaseName: mimir
+  values:
+    gateway:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 50Mi
+        limits:
+          cpu: 500m
+          memory: 100Mi
+    kafka:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 300Mi
+        limits:
+          cpu: 500m
+          memory: 1Gi
+      persistence:
+        size: 20Gi
+
+    ingester:
+      zoneAwareReplication:
+        enabled: false
+    store_gateway:
+      zoneAwareReplication:
+        enabled: false
+    rollout_operator:
+      enabled: false
+
+    ruler:
+      enabled: true
+      resources:
+        requests:
+          cpu: 10m
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          memory: 256Mi
+      extraVolumes:
+        - name: ruler-rules
+          configMap:
+            name: mimir-ruler-rules
+      extraVolumeMounts:
+        - name: ruler-rules
+          mountPath: /rules/anonymous
+          readOnly: true
+    mimir:
+      structuredConfig:
+        limits:
+          otel_metric_suffixes_enabled: true
+        ruler:
+          alertmanager_url: http://grafana.monitoring.svc.cluster.local/api/alertmanager
+          enable_api: true
+          ring:
+            heartbeat_period: 5s
+            heartbeat_timeout: 15s
+        ruler_storage:
+          backend: local
+          local:
+            directory: /rules
