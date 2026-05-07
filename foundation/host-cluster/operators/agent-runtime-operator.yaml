@@ -22,6 +22,8 @@ spec:
   path: ./default
   prune: true
   wait: true
+  dependsOn:
+    - name: infrastructure
   patches:
     - target:
         kind: Namespace
