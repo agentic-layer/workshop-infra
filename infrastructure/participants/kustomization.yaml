@@ -4,3 +4,12 @@ resources:
   - namespaces.yaml
   - serviceaccount.yaml
   - rbac.yaml
+patches:
+  - target:
+      kind: Namespace
+      name: ns-.*
+    patch: |
+      - op: add
+        path: /metadata/annotations
+        value:
+          instrumentation.opentelemetry.io/inject-sdk: monitoring/otel-instrumentation
