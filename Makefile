@@ -22,7 +22,8 @@ create-cluster:
 		--monitoring=SYSTEM \
 		--region=$(GCP_REGION) \
 		--release-channel=stable \
-		--cluster-version=1.33
+		--cluster-version=1.33 \
+		--gateway-api=standard
 	@kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=$$(gcloud config get-value core/account)
 	@kubectl cluster-info
 
