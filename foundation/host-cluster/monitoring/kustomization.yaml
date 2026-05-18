@@ -75,3 +75,11 @@ configMapGenerator:
       labels:
         grafana_dashboard: "1"
       disableNameSuffixHash: true
+  - name: grafana-dashboard-my-namespace
+    namespace: monitoring
+    files:
+      - grafana-dashboard-my-namespace.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      disableNameSuffixHash: true
