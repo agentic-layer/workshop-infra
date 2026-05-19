@@ -23,8 +23,7 @@ spec:
   prune: true
   wait: true
   dependsOn:
-    - name: infrastructure
-    - name: foundation-monitoring-controllers
+    - name: foundation-apps
   images:
     - name: ghcr.io/agentic-layer/testbench/testworkflows
       newTag: "0.9.1"
