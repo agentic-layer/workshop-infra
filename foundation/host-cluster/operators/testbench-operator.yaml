@@ -7,7 +7,7 @@ spec:
   interval: 5m
   url: oci://ghcr.io/agentic-layer/testbench/manifests/testbench-operator
   ref:
-    tag: "0.8.2"
+    tag: "0.9.1"
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -24,3 +24,17 @@ spec:
   wait: true
   dependsOn:
     - name: infrastructure
+    - name: foundation-monitoring-controllers
+  images:
+    - name: ghcr.io/agentic-layer/testbench/testworkflows
+      newTag: "0.9.1"
+  patches:
+    - target:
+        kind: TestWorkflowTemplate
+        name: publish-template
+      patch: |
+        - op: add
+          path: /spec/steps/0/run/env
+          value:
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: http://otel-collector.monitoring:4318
