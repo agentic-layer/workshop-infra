@@ -5,3 +5,4 @@ resources:
   - helm-repository.yaml
   - helm-release.yaml
   - otel-config.yaml
+  - pod-monitor.yaml
