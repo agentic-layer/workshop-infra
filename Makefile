@@ -43,11 +43,13 @@ bootstrap-flux:
   		--personal
 
 secrets:
-	@kubectl create secret generic api-key-secrets \
-		--namespace=ai-gateway \
-		--from-literal=OPENAI_API_KEY=${WORKSHOP_OPENAI_API_KEY} \
-		--from-literal=GEMINI_API_KEY=${WORKSHOP_GEMINI_API_KEY} \
-		--dry-run=client -o yaml | kubectl apply -f -
+	@for ns in ai-gateway $$(printf 'ns-%02d ' $$(seq 1 22)); do \
+		kubectl create secret generic api-key-secrets \
+			--namespace=$$ns \
+			--from-literal=OPENAI_API_KEY=${WORKSHOP_OPENAI_API_KEY} \
+			--from-literal=GEMINI_API_KEY=${WORKSHOP_GEMINI_API_KEY} \
+			--dry-run=client -o yaml | kubectl apply -f - ; \
+	done
 
 kubeconfigs:
 	rm -rf kubeconfigs/ && rm -rf kubeconfigs-encrypted/ && \
