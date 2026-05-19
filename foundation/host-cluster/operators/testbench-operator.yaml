@@ -28,13 +28,3 @@ spec:
   images:
     - name: ghcr.io/agentic-layer/testbench/testworkflows
       newTag: "0.9.1"
-  patches:
-    - target:
-        kind: TestWorkflowTemplate
-        name: publish-template
-      patch: |
-        - op: add
-          path: /spec/steps/0/run/env
-          value:
-            - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: http://otel-collector.monitoring:4318
