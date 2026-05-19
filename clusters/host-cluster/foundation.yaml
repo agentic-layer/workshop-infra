@@ -2,26 +2,13 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: foundation-operators
+  name: observability-controllers
   namespace: flux-system
 spec:
   interval: 5m0s
-  path: ./foundation/host-cluster/operators
+  path: ./foundation/host-cluster/observability-controllers
   prune: true
   wait: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: foundation-monitoring-controllers
-  namespace: flux-system
-spec:
-  interval: 5m0s
-  path: ./foundation/host-cluster/monitoring-controllers
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -31,45 +18,77 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: foundation-monitoring
+  name: observability
   namespace: flux-system
 spec:
   interval: 5m0s
-  path: ./foundation/host-cluster/monitoring
+  path: ./foundation/host-cluster/observability
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
   dependsOn:
-    - name: foundation-monitoring-controllers
+    - name: observability-controllers
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: foundation-apps
+  name: platform-operators
   namespace: flux-system
 spec:
   interval: 5m0s
-  path: ./foundation/host-cluster/apps
+  path: ./foundation/host-cluster/platform-operators
   prune: true
   wait: true
   sourceRef:
     kind: GitRepository
     name: flux-system
   dependsOn:
-    - name: foundation-operators
+    - name: infrastructure
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: foundation-post-apps
+  name: platform-gateways
   namespace: flux-system
 spec:
   interval: 5m0s
-  path: ./foundation/host-cluster/post-apps
+  path: ./foundation/host-cluster/platform-gateways
+  prune: true
+  wait: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  dependsOn:
+    - name: platform-operators
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: user-serving-plane
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  path: ./foundation/host-cluster/user-serving-plane
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
   dependsOn:
-    - name: foundation-apps
+    - name: platform-gateways
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: quality-plane
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  path: ./foundation/host-cluster/quality-plane
+  prune: true
+  retryInterval: 1m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  dependsOn:
+    - name: platform-gateways

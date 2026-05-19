@@ -22,8 +22,7 @@ spec:
   path: ./default
   prune: true
   wait: true
-  dependsOn:
-    - name: foundation-apps
+  retryInterval: 1m
   images:
     - name: ghcr.io/agentic-layer/testbench/testworkflows
       newTag: "0.9.1"

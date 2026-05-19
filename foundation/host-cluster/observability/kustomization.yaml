@@ -10,6 +10,7 @@ resources:
   - otel-collector.yaml
   - otel-instrumentation.yaml
   - mimir-ruler-rules.yaml
+  - observability-dashboard/
 configMapGenerator:
   - name: grafana-dashboard-pvc
     namespace: monitoring

@@ -4,6 +4,25 @@ Infrastructure for our Conference Workshops ("Architecting and Building a K8s-ba
 
 Based on https://github.com/lreimer/k8s-native-iac 's Makefile
 
+## Layout
+
+Flux Kustomizations under `foundation/host-cluster/` are organized along
+the conceptual planes used in the [agentic-layer
+docs](https://docs.agentic-layer.ai/) and the workshop step folders:
+
+| Path | Contents |
+|---|---|
+| `infrastructure/` | Kubernetes prerequisites: cert-manager, Gateway API CRDs |
+| `observability-controllers/` | OpenTelemetry operator, Prometheus CRDs |
+| `observability/` | LGTM stack (Loki, Grafana, Tempo, Mimir), OTel collector, observability-dashboard |
+| `platform-operators/` | The four agentic-layer operators (agent-runtime, agent-gateway-krakend, ai-gateway-litellm, tool-gateway-agentgateway) |
+| `platform-gateways/` | Gateway *instances* (Agent Gateway, AI Gateway, Tool Gateway) — Custom Resources reconciled by the operators above |
+| `user-serving-plane/` | LibreChat, the chat UI participants point at the Agent Gateway |
+| `quality-plane/` | testkube + testbench-operator: evaluating agents with Experiments |
+
+Dependencies are wired so a cold cluster bootstraps cleanly:
+`infrastructure → {observability-controllers, platform-operators} → {observability, platform-gateways} → {user-serving-plane, quality-plane}`.
+
 ## Prerequisites
 
 Requires the following tools:

@@ -5,6 +5,3 @@ resources:
   - agent-gateway/
   - ai-gateway/
   - tool-gateway/
-  - librechat/
-  - observability-dashboard/
-  - testkube/
