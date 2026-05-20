@@ -10,6 +10,25 @@ rules:
     resources: ["pods/portforward", "pods/exec", "services/proxy"]
     verbs: ["create", "update"]
 ---
+# Aggregates into the built-in `edit` ClusterRole so participants can
+# CRUD the agentic-layer + testkube CRDs inside their own namespace
+# via the existing RoleBindings below.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: workshop-edit-crds
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"
+rules:
+  - apiGroups:
+      - runtime.agentic-layer.ai
+      - testbench.agentic-layer.ai
+      - tests.testkube.io
+      - testworkflows.testkube.io
+      - executor.testkube.io
+    resources: ["*"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
